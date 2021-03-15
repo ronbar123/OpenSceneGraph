@@ -248,6 +248,8 @@ class OSG_EXPORT Matrixf
         /** transpose orthogonal part of the matrix **/
         bool transpose3x3(const Matrixf&rhs);
 
+        inline static Matrixf transpose4x4( const Matrixd& matrix );
+
         /** ortho-normalize the 3x3 rotation & scale matrix */
         void orthoNormalize(const Matrixf& rhs);
 
@@ -638,6 +640,14 @@ inline Matrixf Matrixf::rotate(const Vec3f& from, const Vec3f& to )
     m.makeRotate(from,to);
     return m;
 }
+
+inline Matrixf Matrixf::transpose4x4( const Matrixd& matrix )
+{
+    Matrixf m;   
+    m.transpose(m);
+    return m;
+}
+
 inline Matrixf Matrixf::rotate(const Vec3d& from, const Vec3d& to )
 {
     Matrixf m;

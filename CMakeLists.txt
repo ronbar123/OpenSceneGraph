@@ -225,6 +225,29 @@ IF (OSG_MAINTAINER)
 
 ENDIF(OSG_MAINTAINER)
 
+#############################################################
+#               External 3rd parties                        #
+#############################################################
+
+SET (GLEW_ROOT_DIR ${PROJECT_SOURCE_DIR}/external/glew-2.2.0)
+SET (GLEW_LIBRARIES_DIR ${GLEW_ROOT_DIR}/lib)
+SET (GLEW_LIBS 
+    ${GLEW_LIBRARIES_DIR}/glew32.lib
+    ${GLEW_LIBRARIES_DIR}/glew32s.lib
+    CACHE STRING "glew libs" FORCE
+)
+
+SET (GLEW_INCLUDE_DIR ${GLEW_ROOT_DIR}/include)
+SET (GLEW_HEADERS 
+    ${GLEW_INCLUDE_DIR}/GL/eglew.h
+    ${GLEW_INCLUDE_DIR}/GL/glew.h
+    ${GLEW_INCLUDE_DIR}/GL/glxew.h
+    ${GLEW_INCLUDE_DIR}/GL/wglew.h
+    CACHE STRING "glew headers" FORCE
+)
+
+###########################################################################
+
 IF(NOT ANDROID)
 IF(APPLE)
 
@@ -307,7 +330,8 @@ ENDIF()
 
 INCLUDE_DIRECTORIES(${OpenSceneGraph_SOURCE_DIR}/include/)
 
-INCLUDE_DIRECTORIES(SYSTEM ${OPENGL_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(SYSTEM ${OPENGL_INCLUDE_DIR} ${GLEW_INCLUDE_DIR})
+
 
 # Common global definitions
 #ADD_DEFINITIONS(-D)

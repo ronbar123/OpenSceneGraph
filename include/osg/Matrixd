@@ -248,6 +248,8 @@ class OSG_EXPORT Matrixd
         /** transpose orthogonal part of the matrix **/
         bool transpose3x3(const Matrixd&rhs);
 
+        inline static Matrixd transpose4x4( const Matrixd& matrix );
+
         /** ortho-normalize the 3x3 rotation & scale matrix */
         void orthoNormalize(const Matrixd& rhs);
 
@@ -271,7 +273,7 @@ class OSG_EXPORT Matrixd
                                       value_type angle2, const Vec3d& axis2,
                                       value_type angle3, const Vec3d& axis3);
         inline static Matrixd rotate( const Quat& quat);
-        inline static Matrixd inverse( const Matrixd& matrix);
+        inline static Matrixd inverse( const Matrixd& matrix);        
         inline static Matrixd orthoNormal(const Matrixd& matrix);
         /** Create an orthographic projection matrix.
           * See glOrtho for further details.
@@ -533,12 +535,21 @@ inline Matrixd Matrixd::rotate(const Vec3d& from, const Vec3d& to )
     return m;
 }
 
+inline Matrixd Matrixd::transpose4x4( const Matrixd& matrix )
+{
+    Matrixd m;   
+    m.transpose(m);
+    return m;
+}
+
+
 inline Matrixd Matrixd::inverse( const Matrixd& matrix)
 {
     Matrixd m;
     m.invert(matrix);
     return m;
 }
+
 
 inline Matrixd Matrixd::orthoNormal(const Matrixd& matrix)
 {
