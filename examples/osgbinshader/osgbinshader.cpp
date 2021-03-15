@@ -241,7 +241,7 @@ struct LightSource
 };
 
 
-void loadShadersFiles(osg::StateSet* stateSet, std::string vertSourcePath, std::string fragSourcePath, bool isBinaryShader = false)
+void loadShadersFiles(osg::StateSet* stateSet, std::string vertSourcePath, std::string fragSourcePath, bool isBinaryShader = true)
 {
 
 	osg::Program* program = new osg::Program;
@@ -249,10 +249,10 @@ void loadShadersFiles(osg::StateSet* stateSet, std::string vertSourcePath, std::
 	if (isBinaryShader)
 	{
 		program->addShader(new osg::Shader(osg::Shader::VERTEX,
-			osg::ShaderBinary::readShaderBinaryFile("E:/repo/3rdparty-repos/glslang/build/StandAlone/Release/shader_vert.spv")));
+			osg::ShaderBinary::readShaderBinaryFile(vertSourcePath.c_str())));
 
 		program->addShader(new osg::Shader(osg::Shader::FRAGMENT,
-			osg::ShaderBinary::readShaderBinaryFile("E:/repo/3rdparty-repos/glslang/build/StandAlone/Release/shader_frag.spv")));
+			osg::ShaderBinary::readShaderBinaryFile(fragSourcePath.c_str())));
 	}
 	else 
 	{
@@ -356,11 +356,16 @@ int main(int argc, char** argv)
 	modelTransform->setMatrix(osg::Matrix::scale(1.0f, 1.0f, 1.0f) * osg::Matrix::translate(0.0f, 0.0f, 0.0f));
 	modelTransform->addChild(loadedModel);
 
-	std::string passthroughVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through.vert";
-	std::string passthroughFragSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through.frag";
+	//std::string passthroughVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through.vert";
+	//std::string passthroughFragSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through.frag";
+	//std::string modelVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader.vert";
+	//std::string modelFragtSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader.frag";
 
-	std::string modelVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader.vert";
-	std::string modelFragtSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader.frag";
+	std::string passthroughVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through_vert.spv";
+	std::string passthroughFragSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through_frag.spv";
+	std::string modelVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader_vert.spv";
+	std::string modelFragtSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader_frag.spv";
+
 
 	loadShadersFiles(loadedModel->getOrCreateStateSet(), modelVertSourcePath, modelFragtSourcePath);
 	//loadSourceShaders(loadedModel->getOrCreateStateSet(), modelVertSource, modelFragSource);
