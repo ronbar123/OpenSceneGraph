@@ -31,6 +31,7 @@ layout(location = 4) uniform int numOfLightSources;
 layout(location = 5) uniform mat4 osg_ViewMatrix;
 layout(location = 6) uniform mat4 ModelMatrix;
 layout(location = 7) uniform LightSource[2] lightSource; // consumes 2 * 2 locations
+layout(location = 11) uniform mat4 osg_ViewMatrixInverse;
 
 void main(void)
 {

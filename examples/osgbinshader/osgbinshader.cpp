@@ -327,16 +327,21 @@ int main(int argc, char** argv)
 	osg::ref_ptr<osg::Group> root = new osg::Group;
 	osgViewer::Viewer viewer;
 
-	
+	bool isBinaryShader = true;
+	std::string passthroughVertSourcePath;
+	std::string passthroughFragSourcePath;
+	std::string modelVertSourcePath;
+	std::string modelFragtSourcePath;
+
 	osg::ref_ptr<osg::Node> loadedModel =
-		osgDB::readRefNodeFile("D:/repo/OpenSceneGraph/examples/osgbinshader/cube.obj");
+		osgDB::readRefNodeFile("../../../examples/osgbinshader/cube.obj");
 	if (loadedModel == NULL)
 	{
 		osg::notify(osg::FATAL) << "Unable to load model from command line." << std::endl;
 		return(1);
 	}
 	
-	osg::Image* image = osgDB::readImageFile("D:/repo/OpenSceneGraph/examples/osgbinshader/rockwall.png");
+	osg::Image* image = osgDB::readImageFile("../../../examples/osgbinshader/rockwall.png");
 	if (image)
 	{
 		osg::Texture2D* txt = new osg::Texture2D;
@@ -356,20 +361,24 @@ int main(int argc, char** argv)
 	modelTransform->setMatrix(osg::Matrix::scale(1.0f, 1.0f, 1.0f) * osg::Matrix::translate(0.0f, 0.0f, 0.0f));
 	modelTransform->addChild(loadedModel);
 
-	//std::string passthroughVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through.vert";
-	//std::string passthroughFragSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through.frag";
-	//std::string modelVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader.vert";
-	//std::string modelFragtSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader.frag";
+	if (isBinaryShader)
+	{
+		passthroughVertSourcePath = "../../../examples/osgbinshader/pass_through_vert.spv";
+		passthroughFragSourcePath = "../../../examples/osgbinshader/pass_through_frag.spv";
+		modelVertSourcePath = "../../../examples/osgbinshader/shader_vert.spv";
+		modelFragtSourcePath = "../../../examples/osgbinshader/shader_frag.spv";
+	}
+	else
+	{
+		// must have absulute path
+		passthroughVertSourcePath = "../../../examples/osgbinshader/pass_through.vert";
+		passthroughFragSourcePath = "../../../examples/osgbinshader/pass_through.frag";
+		modelVertSourcePath = "../../../examples/osgbinshader/shader.vert";
+		modelFragtSourcePath = "../../../examples/osgbinshader/shader.frag";
+	}
 
-	std::string passthroughVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through_vert.spv";
-	std::string passthroughFragSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/pass_through_frag.spv";
-	std::string modelVertSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader_vert.spv";
-	std::string modelFragtSourcePath = "D:/repo/OpenSceneGraph/examples/osgbinshader/shader_frag.spv";
-
-
-	loadShadersFiles(loadedModel->getOrCreateStateSet(), modelVertSourcePath, modelFragtSourcePath);
-	//loadSourceShaders(loadedModel->getOrCreateStateSet(), modelVertSource, modelFragSource);
-
+	loadShadersFiles(loadedModel->getOrCreateStateSet(), modelVertSourcePath, modelFragtSourcePath, isBinaryShader);
+	
 	// axis
 	osg::Geode* axis = new osg::Geode();
 	axis->addDrawable(createAxis(
@@ -377,14 +386,14 @@ int main(int argc, char** argv)
 		osg::Vec3(5.0f, 0.0f, 0.0f),
 		osg::Vec3(0.0f, 5.0f, 0.0f),
 		osg::Vec3(0.0f, 0.0f, 5.0f)));
-	loadShadersFiles(axis->getOrCreateStateSet(), passthroughVertSourcePath, passthroughFragSourcePath);
+	loadShadersFiles(axis->getOrCreateStateSet(), passthroughVertSourcePath, passthroughFragSourcePath, isBinaryShader);
 
 	// light		
 	LightSource lightSources[2]{};
-	lightSources[0].position = osg::Vec3f(1.5f, 3.0f, 2.5f);
-	lightSources[0].color = osg::Vec3f(1.f, 0.f, 1.f);
-	lightSources[1].position = osg::Vec3f(-3.5f, -2.1f, 1.5f);
-	lightSources[1].color = osg::Vec3f(0.f, 1.f, 1.0f);
+	lightSources[0].position = osg::Vec3f(-3.0f, 2.0f, .0f);
+	lightSources[0].color = osg::Vec3f(1.f, .5f, .0f);
+	lightSources[1].position = osg::Vec3f(2.0f, -1.0f, 1.0f);
+	lightSources[1].color = osg::Vec3f(.5f, .0f, 1.f);
 	int numOfLightSources = sizeof(lightSources) / sizeof(LightSource);
 
 	for (int i = 0; i <= numOfLightSources - 1; i++)
@@ -396,7 +405,7 @@ int main(int argc, char** argv)
 		osg::ref_ptr<osg::MatrixTransform> lightTransform = new osg::MatrixTransform;
 		lightTransform->setMatrix(osg::Matrix::scale(1.0f, 1.0f, 1.0f) * osg::Matrix::translate(lightSources[i].position));
 		lightTransform->addChild(lightGeode);
-		loadShadersFiles(lightTransform->getOrCreateStateSet(), passthroughVertSourcePath, passthroughFragSourcePath);
+		loadShadersFiles(lightTransform->getOrCreateStateSet(), passthroughVertSourcePath, passthroughFragSourcePath, isBinaryShader);
 
 		std::string uniformPosName = "lightSource[" + std::to_string(i) + "].position";
 		std::string uniformColorName = "lightSource[" + std::to_string(i) + "].color";
