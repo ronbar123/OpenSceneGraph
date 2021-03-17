@@ -19,6 +19,7 @@ layout(location = 5) uniform mat4 osg_ViewMatrix;
 layout(location = 6) uniform mat4 ModelMatrix;
 layout(location = 7) uniform LightSource[2] lightSource; // consumes 2 * 2 locations
 layout(location = 11) uniform mat4 osg_ViewMatrixInverse;
+layout(location = 12) uniform bool IsUsePhongModel;
 
 layout(location = 0) out vec4 FragColor;
 
@@ -26,9 +27,9 @@ layout(location = 0) out vec4 FragColor;
 void main(void)
 {
 	
-	float ambientStrength = 0.001;
+	float ambientStrength = 0.1;
 	float diffuseStrength = 0.9f;
-	float specularStrength = 3.2;
+	float specularStrength = 100;
 
 	// specular					
 	// Convert camera position from Camera (eye) space (its always at 0, 0, 0, 1
@@ -47,10 +48,18 @@ void main(void)
 		float diff = max(dot(norm.xyz, lightDir), 0.0);
 		vec3 diffuse = diffuseStrength * diff * texture(baseTexture, fragTexCoords).rgb;
 
-		
 		// specular
-        vec3 halfwayDir = normalize(lightDir + viewDir);  
-        float spec = pow(max(dot(norm.xyz, halfwayDir), 0.0), 8.0);
+		float spec = 0.0;
+		if(IsUsePhongModel)
+		{
+			vec3 reflectDir = reflect(-lightDir, norm.xyz);
+			spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
+		}
+		else
+		{
+			vec3 halfwayDir = normalize(lightDir + viewDir);  
+			spec = pow(max(dot(norm.xyz, halfwayDir), 0.0), 16);
+		}
         vec3 specular = specularStrength * lightSource[i].color * spec;
 
 		vec3 finalColor = (ambient + diffuse + specular) * lightSource[i].color;

@@ -19,8 +19,8 @@
  *         Holger Helmich 2010-10-21
 */
 
-#include <GL/glew.h>
 
+#include "GL/glew.h"
 #include <fstream>
 #include <list>
 #include <sstream>
@@ -35,10 +35,6 @@
 #include <osg/Shader>
 #include <osg/GLExtensions>
 #include <osg/ContextData>
-
-
-
-
 
 namespace osg
 {

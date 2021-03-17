@@ -458,6 +458,10 @@ int main(int argc, char** argv)
 	normalMatrix->setUpdateCallback(new NormalMatrixCallback(cam));
 	root->getOrCreateStateSet()->addUniform(normalMatrix);
 
+	
+	osg::Uniform* isUsePhongModel = new osg::Uniform(osg::Uniform::BOOL, "IsUsePhongModel");
+	isUsePhongModel->set(false);
+	root->getOrCreateStateSet()->addUniform(isUsePhongModel);
 
 	// enable the osg_ uniforms that the shaders will use,	
 	gc->getState()->setUseModelViewAndProjectionUniforms(true);
