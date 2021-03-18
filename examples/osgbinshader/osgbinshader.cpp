@@ -26,177 +26,7 @@
 #include "osg/Texture2D"
 
 
-#pragma region  shaders
-
-
-#define GLSL430(src) "#version 430\n" #src
-
-#pragma region passthrough shaders
-
-const char* passthroughVertSource = GLSL430(
-
-struct LightSource
-{
-	vec3 position;
-	vec3 color;
-};
-
-layout(location = 0) in vec4 osg_Vertex;
-layout(location = 1) in vec3 osg_Normal;
-layout(location = 2) in vec3 osg_Color;
-
-layout(location = 0) out vec4 fragPos;
-layout(location = 1) out vec3 fragNormal;
-layout(location = 2) out vec4 color;
-
-layout(location = 0) uniform mat4 osg_ModelViewProjectionMatrix;
-layout(location = 1) uniform mat3 osg_NormalMatrix;
-layout(location = 2) uniform mat4 NormalMatrix;
-layout(location = 3) uniform mat4 ModelMatrix;
-layout(location = 4) uniform LightSource lightsource; // consumes 2 locations
-
-void main(void)
-{
-	fragNormal = osg_Normal;
-	color = vec4(osg_Color, 1.0f);
-
-	gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;
-}
-);
-
-const char* passthroughFragSource = GLSL430(
-
-struct LightSource
-{
-	vec3 position;
-	vec3 color;
-};
-
-layout(location = 0) in vec4 fragPos;
-layout(location = 1) in vec3 fragNormal;
-layout(location = 2) in vec4 color;
-
-
-layout(location = 0) uniform mat4 osg_ModelViewProjectionMatrix;
-layout(location = 1) uniform mat3 osg_NormalMatrix;
-layout(location = 2) uniform mat4 NormalMatrix;
-layout(location = 3) uniform mat4 ModelMatrix;
-layout(location = 4) uniform LightSource lightsource; // consumes 2 locations
-
-layout(location = 0) out vec4 FragColor;
-void main(void)
-{
-	FragColor = color;
-}
-);
-
-
-#pragma endregion 
-
-#pragma region model shaders
-
-const char* modelVertSource = GLSL430(
-
-struct LightSource
-{
-	vec3 position;
-	vec3 color;
-};
-
-layout(location = 0) in vec4 osg_Vertex;
-layout(location = 1) in vec3 osg_Normal;
-layout(location = 2) in vec3 osg_Color;
-layout(location = 3) in vec4 osg_MultiTexCoord0;
-layout(location = 4) in vec4 osg_MultiTexCoord1;
-layout(location = 5) in vec4 osg_MultiTexCoord2;
-layout(location = 6) in vec4 osg_MultiTexCoord3;
-layout(location = 7) in vec4 osg_MultiTexCoord4;
-layout(location = 8) in vec4 osg_MultiTexCoord5;
-layout(location = 9) in vec4 osg_MultiTexCoord6;
-layout(location = 10) in vec4 osg_MultiTexCoord7;
-
-layout(location = 0) out vec4 fragPos;
-layout(location = 1) out vec3 fragNormal;
-layout(location = 2) out vec4 color;
-layout(location = 3) out vec2 fragTexCoords;
-
-uniform sampler2D baseTexture;
-layout(location = 0) uniform mat4 osg_ModelViewProjectionMatrix;
-layout(location = 1) uniform mat3 osg_NormalMatrix;
-layout(location = 3) uniform mat4 NormalMatrix;
-layout(location = 4) uniform int numOfLightSources;
-layout(location = 5) uniform mat4 osg_ViewMatrix;
-layout(location = 6) uniform mat4 ModelMatrix;
-layout(location = 7) uniform LightSource[2] lightSource; // consumes 2 * 2 locations
-
-void main(void)
-{
-	fragNormal = osg_Normal;
-	fragPos = vec4(vec3(ModelMatrix * osg_Vertex), 1.0);
-	color = vec4(osg_Color, 1.0f);
-	fragTexCoords = osg_MultiTexCoord0.xy;
-
-	gl_Position = osg_ModelViewProjectionMatrix * osg_Vertex;
-}
-);
-
-const char* modelFragSource = GLSL430(
-
-struct LightSource
-{
-	vec3 position;
-	vec3 color;
-};
-
-layout(location = 0) in vec4 fragPos;
-layout(location = 1) in vec3 fragNormal;
-layout(location = 2) in vec4 color;
-layout(location = 3) in vec2 fragTexCoords;
-
-uniform sampler2D baseTexture;
-layout(location = 0) uniform mat4 osg_ModelViewProjectionMatrix;
-layout(location = 1) uniform mat3 osg_NormalMatrix;
-layout(location = 3) uniform mat4 NormalMatrix;
-layout(location = 4) uniform int numOfLightSources;
-layout(location = 5) uniform mat4 osg_ViewMatrix;
-layout(location = 6) uniform mat4 ModelMatrix;
-layout(location = 7) uniform LightSource[2] lightSource; // consumes 2 * 2 locations
-
-
-layout(location = 0) out vec4 FragColor;
-
-
-void main(void)
-{
-	for (int i = 0; i <= numOfLightSources - 1; i++)
-	{
-		// ambient
-		float ambientStrength = 0.001;
-		vec3 ambient = ambientStrength * texture(baseTexture, fragTexCoords).rgb * lightSource[i].color;
-		
-		//diffuse			
-		vec4 norm = normalize(NormalMatrix * vec4(fragNormal, 1.0f));
-		vec3 lightDir = normalize(lightSource[i].position - fragPos.xyz);
-		float diff = max(dot(norm.xyz, lightDir), 0.0);
-		vec3 diffuse = diff * lightSource[i].color * texture(baseTexture, fragTexCoords).rgb;
-
-		vec3 finalColor = ambient + diffuse;
-		FragColor += vec4(finalColor, 1.0f);
-
-	}
-}
-
-
-);
-
-
-#pragma endregion 
-
-
-#pragma endregion 
-
-
-#pragma uniform_callback
+#pragma region uniform_callback
 
 struct NormalMatrixCallback : public osg::Uniform::Callback {
 	NormalMatrixCallback(osg::Camera* camera) :
@@ -234,6 +64,7 @@ struct ModelMatrixCallback : public osg::Uniform::Callback {
 
 #pragma endregion 
 
+
 struct LightSource
 {
 	osg::Vec3f position;
@@ -265,21 +96,6 @@ void loadShadersFiles(osg::StateSet* stateSet, std::string vertSourcePath, std::
 }
 
 
-
-void loadSourceShaders(osg::StateSet* stateSet, const char* vertSource, const char* fragSource)
-{
-
-	osg::Shader* vShader = new osg::Shader(osg::Shader::VERTEX, vertSource);
-	osg::Shader* fShader = new osg::Shader(osg::Shader::FRAGMENT, fragSource);
-
-	osg::Program* program = new osg::Program;
-
-	program->addShader(vShader);
-	program->addShader(fShader);
-
-	stateSet->setAttribute(program);
-
-}
 
 osg::Drawable* createAxis(const osg::Vec3& corner, const osg::Vec3& xdir, const osg::Vec3& ydir, const osg::Vec3& zdir)
 {// set up the Geometry.
@@ -327,13 +143,13 @@ int main(int argc, char** argv)
 	osg::ref_ptr<osg::Group> root = new osg::Group;
 	osgViewer::Viewer viewer;
 
-	bool isBinaryShader = true;
+	bool isBinaryShader = false;
 	std::string passthroughVertSourcePath;
 	std::string passthroughFragSourcePath;
 	std::string modelVertSourcePath;
 	std::string modelFragtSourcePath;
 
-	osg::ref_ptr<osg::Node> loadedModel =
+	osg::ref_ptr<osg::Node> loadedModel = 
 		osgDB::readRefNodeFile("../../../examples/osgbinshader/cube.obj");
 	if (loadedModel == NULL)
 	{
@@ -363,10 +179,10 @@ int main(int argc, char** argv)
 
 	if (isBinaryShader)
 	{
-		passthroughVertSourcePath = "../../../examples/osgbinshader/pass_through_vert.spv";
-		passthroughFragSourcePath = "../../../examples/osgbinshader/pass_through_frag.spv";
-		modelVertSourcePath = "../../../examples/osgbinshader/shader_vert.spv";
-		modelFragtSourcePath = "../../../examples/osgbinshader/shader_frag.spv";
+		passthroughVertSourcePath = "../../../examples/osgbinshader/pass_through.vert.spv";
+		passthroughFragSourcePath = "../../../examples/osgbinshader/pass_through.frag.spv";
+		modelVertSourcePath = "../../../examples/osgbinshader/shader.vert.spv";
+		modelFragtSourcePath = "../../../examples/osgbinshader/shader.frag.spv";
 	}
 	else
 	{
@@ -457,11 +273,6 @@ int main(int argc, char** argv)
 	osg::Uniform* normalMatrix = new osg::Uniform(osg::Uniform::FLOAT_MAT4, "NormalMatrix");
 	normalMatrix->setUpdateCallback(new NormalMatrixCallback(cam));
 	root->getOrCreateStateSet()->addUniform(normalMatrix);
-
-	
-	osg::Uniform* isUsePhongModel = new osg::Uniform(osg::Uniform::BOOL, "IsUsePhongModel");
-	isUsePhongModel->set(false);
-	root->getOrCreateStateSet()->addUniform(isUsePhongModel);
 
 	// enable the osg_ uniforms that the shaders will use,	
 	gc->getState()->setUseModelViewAndProjectionUniforms(true);

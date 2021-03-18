@@ -19,7 +19,6 @@ layout(location = 5) uniform mat4 osg_ViewMatrix;
 layout(location = 6) uniform mat4 ModelMatrix;
 layout(location = 7) uniform LightSource[2] lightSource; // consumes 2 * 2 locations
 layout(location = 11) uniform mat4 osg_ViewMatrixInverse;
-layout(location = 12) uniform bool IsUsePhongModel;
 
 layout(location = 0) out vec4 FragColor;
 
@@ -50,16 +49,8 @@ void main(void)
 
 		// specular
 		float spec = 0.0;
-		if(IsUsePhongModel)
-		{
-			vec3 reflectDir = reflect(-lightDir, norm.xyz);
-			spec = pow(max(dot(viewDir, reflectDir), 0.0), 8.0);
-		}
-		else
-		{
-			vec3 halfwayDir = normalize(lightDir + viewDir);  
-			spec = pow(max(dot(norm.xyz, halfwayDir), 0.0), 16);
-		}
+		vec3 halfwayDir = normalize(lightDir + viewDir);  
+		spec = pow(max(dot(norm.xyz, halfwayDir), 0.0), 16);
         vec3 specular = specularStrength * lightSource[i].color * spec;
 
 		vec3 finalColor = (ambient + diffuse + specular) * lightSource[i].color;
