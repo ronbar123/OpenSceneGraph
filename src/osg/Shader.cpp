@@ -19,8 +19,11 @@
  *         Holger Helmich 2010-10-21
 */
 
+#define GLEW_FOUND 1
+#if GLEW_FOUND
+    #include "GL/glew.h"
+#endif
 
-#include "GL/glew.h"
 #include <fstream>
 #include <list>
 #include <sstream>
@@ -647,18 +650,24 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 #else
 
     GLint compiled = GL_FALSE;
+    bool use_binary_shader = false;
 
-    if (_shader->getShaderBinary())
-    {
-        compiled = loadBinaryShader(
-            _shader->getShaderBinary()->getData(),
-            _shader->getShaderBinary()->getSize(),
-            GL_SHADER_BINARY_FORMAT_SPIR_V_ARB,
-            _glShaderHandle,
-        _extensions);
+#if GLEW_FOUND
 
-    }
-    else
+	use_binary_shader = _shader->getShaderBinary();
+	if (use_binary_shader)
+	{
+		compiled = loadBinaryShader(
+			_shader->getShaderBinary()->getData(),
+			_shader->getShaderBinary()->getSize(),
+			GL_SHADER_BINARY_FORMAT_SPIR_V_ARB,
+			_glShaderHandle,
+			_extensions);
+
+	}
+#endif
+
+    if (!use_binary_shader)
     {
         std::string source = _shader->getShaderSource();
         // if (_shader->getType()==osg::Shader::VERTEX && (state.getUseVertexAttributeAliasing() || state.getUseModelViewAndProjectionUniforms()))
