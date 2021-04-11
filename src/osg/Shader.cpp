@@ -19,7 +19,6 @@
  *         Holger Helmich 2010-10-21
 */
 
-#define GLEW_FOUND 1
 #if GLEW_FOUND
     #include "GL/glew.h"
 #endif
