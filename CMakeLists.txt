@@ -245,7 +245,7 @@ SET (GLEW_HEADERS
     ${GLEW_INCLUDE_DIR}/GL/wglew.h
     CACHE STRING "glew headers" FORCE
 )
-ADD_DEFINITIONS(-DGLEW_FOUND=1)
+add_compile_definitions(GLEW_FOUND=1)
 
 ###########################################################################
 

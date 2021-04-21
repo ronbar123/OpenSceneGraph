@@ -674,7 +674,8 @@ GLExtensions::GLExtensions(unsigned int in_contextID):
     setGLExtensionFuncPtr(glProgramBinary, "glProgramBinary", validContext);
     setGLExtensionFuncPtr(glShaderBinary, "glShaderBinary", validContext);
     setGLExtensionFuncPtr(glSpecializeShaderARB, "glSpecializeShaderARB", validContext);
-
+    setGLExtensionFuncPtr(glSpecializeShader, "glSpecializeShader", validContext);
+    
     // ARB_gpu_shader_fp64
     setGLExtensionFuncPtr(glUniform1d, "glUniform1d" , validContext);
     setGLExtensionFuncPtr(glUniform2d, "glUniform2d" , validContext);

@@ -587,7 +587,7 @@ bool static loadBinaryShader(const unsigned char* bin, size_t size, GLuint binar
     GLint compiled = GL_FALSE;
     
 	_extensions->glShaderBinary(1, &shader, binaryFormat, bin, size);
-	_extensions->glSpecializeShaderARB(shader, "main", 0, nullptr, nullptr);
+	_extensions->glSpecializeShaderARB(shader, "main", 0, 0, 0);
 	_extensions->glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
 
     return compiled == GL_TRUE;

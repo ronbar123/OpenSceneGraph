@@ -179,7 +179,7 @@ int main(int argc, char** argv)
 	{
 		isBinaryShader = true;
 	}
-	
+	isBinaryShader = true;
 	arguments.read("--model-shader", modelVertSourcePath, modelFragtSourcePath) || arguments.read("-m", modelVertSourcePath, modelFragtSourcePath);
 	arguments.read("--lamp-shader", lampVertSourcePath, lampFragSourcePath) || arguments.read("-l", lampVertSourcePath, lampFragSourcePath);
 	arguments.read("--tex", img_texture_path) || arguments.read("-t", img_texture_path);
