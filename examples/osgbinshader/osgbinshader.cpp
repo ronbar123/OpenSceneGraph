@@ -24,7 +24,7 @@
 #include "osg/LineWidth"
 #include "osg/ShapeDrawable"
 #include "osg/Texture2D"
-
+#include "osgUtil/Optimizer"
 
 #pragma region uniform_callback
 
@@ -179,7 +179,6 @@ int main(int argc, char** argv)
 	{
 		isBinaryShader = true;
 	}
-	isBinaryShader = true;
 	arguments.read("--model-shader", modelVertSourcePath, modelFragtSourcePath) || arguments.read("-m", modelVertSourcePath, modelFragtSourcePath);
 	arguments.read("--lamp-shader", lampVertSourcePath, lampFragSourcePath) || arguments.read("-l", lampVertSourcePath, lampFragSourcePath);
 	arguments.read("--tex", img_texture_path) || arguments.read("-t", img_texture_path);
@@ -303,6 +302,11 @@ int main(int argc, char** argv)
 
 
 	viewer.setSceneData(root);
+
+	osgUtil::Optimizer optimizer;
+	int options = osgUtil::Optimizer::ALL_OPTIMIZATIONS;
+	options &= ~osgUtil::Optimizer::REMOVE_REDUNDANT_NODES;
+	optimizer.optimize(root.get(), options);
 
 	do
 	{		

@@ -98,7 +98,7 @@ createStateSet()
     ss->setAttribute( program.get(),
         osg::StateAttribute::ON | osg::StateAttribute::PROTECTED );
 
-    osg::ref_ptr< osg::Image> iLogo = osgDB::readRefImageFile( "Images/osg128.png" );
+    osg::ref_ptr< osg::Image> iLogo = osgDB::readRefImageFile( "D:/repo/OpenSceneGraph-Data/Images/osg128.png" );
     if( !iLogo.valid() )
     {
         osg::notify( osg::ALWAYS ) << "Can't open image file osg128.png" << std::endl;

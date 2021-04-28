@@ -1,0 +1,1 @@
+../../../examples/osgbinshader/cube.obj -b -l ../../../examples/osgbinshader/pass_through.vert.spv ../../../examples/osgbinshader/pass_through.frag.spv -m ../../../examples/osgbinshader/shader.vert.spv ../../../examples/osgbinshader/shader.frag.spv --tex ../../../examples/osgbinshader/rockwall.png

@@ -25,7 +25,9 @@ layout(location = 1) out vec3 fragNormal;
 layout(location = 2) out vec4 color;
 layout(location = 3) out vec2 fragTexCoords;
 
-uniform sampler2D baseTexture;
+//uniform sampler2D baseTexture;
+layout(binding = 0) uniform sampler2D baseTexture;
+
 layout(location = 0) uniform mat4 osg_ModelViewProjectionMatrix;
 layout(location = 1) uniform mat3 osg_NormalMatrix;
 layout(location = 3) uniform mat4 NormalMatrix;
